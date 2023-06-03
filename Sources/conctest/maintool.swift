@@ -1,11 +1,11 @@
-import conctest
 import Foundation
 
-@main struct MainTool  {
+public struct MainTool  {
     
-    static func main() async throws {
+    public static func main() async throws {
         print("Process Started")
 
+/*
         DispatchQueue.global(qos:.default).async {
             print("Ha!", Thread.current)
         }
@@ -14,7 +14,7 @@ import Foundation
         Thread.sleep(forTimeInterval: 2.0)
         
         if true { return }
-        
+*/        
         if await bollox() {
             return
         }
@@ -94,6 +94,7 @@ import Foundation
     
     
     
+    /// Looks at creating concurrent tasks in a group and waiting for them to complete.
     static func bollox() async -> Bool {
 
         let result = await withTaskGroup(of: Double.self, returning: Double.self) {group in
