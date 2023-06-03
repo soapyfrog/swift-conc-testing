@@ -1,16 +1,16 @@
 import XCTest
-@testable import conctest
+@testable import SwiftConcTesting
 
-final class conctestNormal: XCTestCase {
+final class StuffTest: XCTestCase {
     func testNormal() throws {
-        let testee = conctest()
+        let testee = SC3()
         measure {
             testee.doNormal()
         }
     }
 
     func testAsync() throws {
-        let testee = conctest()
+        let testee = SC3()
         
         
         self.measureMetrics([.wallClockTime], automaticallyStartMeasuring: false) {

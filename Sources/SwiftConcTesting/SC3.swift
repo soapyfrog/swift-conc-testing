@@ -1,6 +1,6 @@
 
 
-public struct conctest {
+public struct SC3 {
 
     static let START = 100_000
     
@@ -16,7 +16,7 @@ public struct conctest {
             _ = doRaw(n)
             return n+abc(n-1)
         }
-        let k = abc(conctest.START)
+        let k = abc(SC3.START)
         print("Normal k=\(k)")
     }
     
@@ -26,7 +26,7 @@ public struct conctest {
             _ = doRaw(n)
             return await n + abc(n-1)
         }
-        let k = await abc(conctest.START)
+        let k = await abc(SC3.START)
         print("Async k=\(k)")
     }
     
