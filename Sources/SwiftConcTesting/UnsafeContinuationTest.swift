@@ -17,7 +17,7 @@ public struct UnsafeContinuationTest {
                 
         // This is really handy to await on something that has some callback
         // handler, like FileHandle's readabilityHandler.
-        // It suspends the current thread until something is available.
+        // It suspends the current Task until something is available.
         let thing = await withUnsafeContinuation {c in
             print("Name? ", terminator: "")
             FileHandle.standardInput.readabilityHandler = { fh in
