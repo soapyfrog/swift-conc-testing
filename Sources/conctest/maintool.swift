@@ -110,8 +110,19 @@ public struct MainTool  {
             }
             return ds
         }
-        
+
+        // On Windows, it doesn't get to here and doesn't seem to print "end n=1000" either.
+        // it's like it's just not flushing out the stdout buffer.       
         print(result)
+
+        print("======")
+
+        do {
+            try await Task.sleep(for:.seconds(2))
+        }
+        catch {
+            print("meh")
+        }
         
         return true
         
