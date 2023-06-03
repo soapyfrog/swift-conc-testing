@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct SC2 {
+public struct UnsafeContinuationTest {
     @MainActor
     static func othermain() async -> Bool {
         

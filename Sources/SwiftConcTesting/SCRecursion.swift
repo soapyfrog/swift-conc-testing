@@ -1,6 +1,6 @@
 
 
-public struct SC3 {
+public struct SCRecursion {
 
     static let START = 100_000
     
@@ -16,7 +16,7 @@ public struct SC3 {
             _ = doRaw(n)
             return n+abc(n-1)
         }
-        let k = abc(SC3.START)
+        let k = abc(SCRecursion.START)
         print("Normal k=\(k)")
     }
     
@@ -26,13 +26,8 @@ public struct SC3 {
             _ = doRaw(n)
             return await n + abc(n-1)
         }
-        let k = await abc(SC3.START)
+        let k = await abc(SCRecursion.START)
         print("Async k=\(k)")
-    }
-    
-    
-    static func main() {
-        print("Hello, world")
     }
     
 }
