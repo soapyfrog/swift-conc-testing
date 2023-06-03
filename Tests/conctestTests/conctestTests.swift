@@ -1,11 +1,28 @@
 import XCTest
 @testable import conctest
 
-final class conctestTests: XCTestCase {
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(conctest().text, "Hello, World!")
+final class conctestNormal: XCTestCase {
+    func testNormal() throws {
+        let testee = conctest()
+        measure {
+            testee.doNormal()
+        }
+    }
+
+    func testAsync() throws {
+        let testee = conctest()
+        
+        
+        self.measureMetrics([.wallClockTime], automaticallyStartMeasuring: false) {
+            let exp = expectation(description: "Done")
+            startMeasuring()
+            Task {
+                await testee.doAsync()
+                exp.fulfill()
+            }
+            wait(for: [exp], timeout: 200.0)
+            stopMeasuring()
+        }
     }
 }
+
