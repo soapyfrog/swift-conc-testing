@@ -3,9 +3,7 @@ import Foundation
 public struct SCandSempahores {
     
     public init() {}
-    
-
-    
+        
     /// We'll make this async to ensure we're in a Task
     public func go() async {
         check("go")
@@ -32,6 +30,7 @@ public struct SCandSempahores {
             check("second anon task")
             print (await task.value)
         }
+        
     }
     
     func doSomethingExperimental() {

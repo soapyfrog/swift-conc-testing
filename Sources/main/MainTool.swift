@@ -9,10 +9,22 @@ import Foundation
  */
 @main struct Main {
     static func main() async throws {
+        
+        ioTest()
+    }
+    
+    
+    static func ioTest() {
+        IOTest().go()
+    }
+    
+    
+    static func scAndSemaphores() async throws {
         await SCandSempahores().go()
         
         // hang around for a second incase of other async activity
         try await Task.sleep(for: .seconds(1))
+
     }
     
     
