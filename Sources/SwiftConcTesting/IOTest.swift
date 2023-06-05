@@ -4,27 +4,7 @@ import Foundation
 
 
 public class IOTest {
-    var savedStdinTermIos:termios=termios()
-    public init() {
-        withUnsafeMutablePointer(to: &savedStdinTermIos) { p in
-            tcgetattr(FileHandle.standardInput.fileDescriptor, p)
-            return
-        }
-        
-        var t = savedStdinTermIos
-        withUnsafeMutablePointer(to: &t) { p in
-//            tcgetattr(FileHandle.standardInput.fileDescriptor, p)
-            p.pointee.c_lflag &= ~UInt(ECHO | ICANON | IEXTEN | ISIG)
-            p.pointee.c_iflag &= ~UInt(BRKINT | ICRNL | INPCK | ISTRIP | IXON)
-            tcsetattr(FileHandle.standardInput.fileDescriptor, TCSAFLUSH, p)
-        }
-    }
-    deinit {
-        _ = withUnsafeMutablePointer(to: &savedStdinTermIos) { p in
-            tcsetattr(FileHandle.standardInput.fileDescriptor, TCSAFLUSH, p)
-        }
-    }
-    
+    public init(){}
     
     public func go() {
         let io:IO = SimpleIO()
@@ -33,13 +13,13 @@ public class IOTest {
         let line = io.readLine(echo:true) ?? "<EOF>"
         io.write("\n\rGot: \(line)\r\n")
         
-        print("Type characters, end with q, or EOF")
+        io.write("Type characters, end with q, or EOF\n")
         
         while let c = io.read(echo:false) {
             io.write("\(c)")
-            if c == "\r" { io.write("\n") }
+            //if c == "\r" { io.write("\n") }
             if c == "q" {
-                io.write("\r\nGot q, ending... ")
+                io.write("\r\nGot q, ending... \n")
                 break
             }
         }
@@ -71,7 +51,52 @@ protocol IO {
 ///
 /// Restores the terminal back to normal on `deinit`.
 class SimpleIO : IO {
+
+    var savedStdinTermIos = termios()
+    var savedStdoutTermIos = termios()
+    init() {
+        // save stdin
+        withUnsafeMutablePointer(to: &savedStdinTermIos) { p in
+            tcgetattr(FileHandle.standardInput.fileDescriptor, p)
+            return
+        }
+        // save stdout
+        withUnsafeMutablePointer(to: &savedStdoutTermIos) { p in
+            tcgetattr(FileHandle.standardOutput.fileDescriptor, p)
+            return
+        }
+
+        // raw mode for stdin
+        var t = savedStdinTermIos
+        withUnsafeMutablePointer(to: &t) { p in
+//            p.pointee.c_lflag &= ~UInt(ECHO | ICANON | IEXTEN | ISIG)
+//            p.pointee.c_iflag &= ~UInt(BRKINT | ICRNL | INPCK | ISTRIP | IXON)
+            cfmakeraw(p)
+            tcsetattr(FileHandle.standardInput.fileDescriptor, TCSAFLUSH, p)
+        }
+        
+        // no post processing on stdout
+        t = savedStdoutTermIos
+        withUnsafeMutablePointer(to: &t) { p in
+//            p.pointee.c_lflag &= ~UInt(ECHO | ICANON | IEXTEN | ISIG)
+//            p.pointee.c_oflag &= ~UInt(OPOST /*| OCRNL | ONLCR */)
+            cfmakeraw(p)
+            tcsetattr(FileHandle.standardOutput.fileDescriptor, TCSAFLUSH, p)
+        }
+
+    }
+    deinit {
+        withUnsafeMutablePointer(to: &savedStdinTermIos) { p in
+            tcsetattr(FileHandle.standardInput.fileDescriptor, TCSAFLUSH, p)
+            return
+        }
+        withUnsafeMutablePointer(to: &savedStdoutTermIos) { p in
+            tcsetattr(FileHandle.standardOutput.fileDescriptor, TCSAFLUSH, p)
+            return
+        }
+    }
     
+
     private var readAhead:String = ""
     
     func read(echo:Bool) -> Character? {
